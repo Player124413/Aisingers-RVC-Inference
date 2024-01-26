@@ -37,11 +37,11 @@ voices = [f"{v['ShortName']}-{v['Gender']}" for v in tts_voice_list]
 hubert_model = None
 
 f0method_mode = ["pm", "harvest", "crepe"]
-f0method_info = "PM is fast, Harvest is good but extremely slow, and Crepe effect is good but requires GPU (Default: PM)"
+f0method_info = "PM работает быстро, Harvest хорош, но очень медленный, а эффект Crepe хорош, но требует GPU (по умолчанию: PM)"
 
 if os.path.isfile("rmvpe.pt"):
     f0method_mode.insert(2, "rmvpe")
-    f0method_info = "PM is fast, Harvest is good but extremely slow, Rvmpe is alternative to harvest (might be better), and Crepe effect is good but requires GPU (Default: PM)"
+    f0method_info = "PM работает быстро, Harvest хорош, но очень медленный, Rvmpe - альтернатива Harvest (может быть лучше), а эффект Crepe хорош, но требует GPU (по умолчанию: PM)."
 
 def load_hubert():
     global hubert_model
@@ -222,7 +222,7 @@ def get_vc(sid, to_return_protect0):
             gr.Slider.update(maximum=2333, visible=False),
             gr.Slider.update(visible=True),
             gr.Dropdown.update(choices=sorted(weights_index), value=""),
-            gr.Markdown.update(value="# <center> No model selected")
+            gr.Markdown.update(value="# <center> Модель не выбрана")
         )
     print(f"Loading {sid} model...")
     selected_model = sid[:-4]
@@ -501,7 +501,7 @@ def download_and_extract_models(urls):
                 yield "\n".join(logs)
         logs.append("Download Completed!")
         yield "\n".join(logs)
-    logs.append("Successfully download all models! Refresh your model list to load the model")
+    logs.append("Все модели успешно скачаны! Обновите список моделей, чтобы загрузить модель.")
     yield "\n".join(logs)
 
 def use_microphone(microphone):
@@ -622,7 +622,7 @@ def change_audio_mode(vc_audio_mode):
         
 with gr.Blocks() as app:
     gr.Markdown(
-        "# <center> Advanced RVC Inference\n"
+        "# <center> 🐟 AISINGERS AI COVER | https://t.me/aisingers RU\n"
     )
     with gr.Row():
         sid = gr.Dropdown(
@@ -643,21 +643,21 @@ with gr.Blocks() as app:
             visible=False,
             interactive=True,
         )
-        refresh_model = gr.Button("Refresh model list", variant="primary")
-        clean_button = gr.Button("Clear Model from memory", variant="primary")
+        refresh_model = gr.Button("Обновить список моделей.", variant="primary")
+        clean_button = gr.Button("Очистить модель из памяти.", variant="primary")
         refresh_model.click(
             fn=check_models, inputs=[], outputs=[sid, file_index]
         )
         clean_button.click(fn=clean, inputs=[], outputs=[sid, spk_item])
-    with gr.TabItem("Inference"):
-        selected_model = gr.Markdown(value="# <center> No model selected")
+    with gr.TabItem("Интерфейс"):
+        selected_model = gr.Markdown(value="# <center> Модель не выбрана.")
         with gr.Row():
             with gr.Column():
-                vc_audio_mode = gr.Dropdown(label="Input voice", choices=["Input path", "Upload audio", "Youtube", "TTS Audio"], allow_custom_value=False, value="Upload audio")
+                vc_audio_mode = gr.Dropdown(label="Ввод голосовых данных.", choices=["Путь для ввода", "Загрузить аудио", "Youtube", "Аудио TTS (текст в речь)"], allow_custom_value=False, value="Upload audio")
                 # Input
-                vc_input = gr.Textbox(label="Input audio path", visible=False)
+                vc_input = gr.Textbox(label="Введите путь к аудиофайлу.", visible=False)
                 # Upload
-                vc_microphone_mode = gr.Checkbox(label="Use Microphone", value=False, visible=True, interactive=True)
+                vc_microphone_mode = gr.Checkbox(label="Использовать Микрофон", value=False, visible=True, interactive=True)
                 vc_upload = gr.Audio(label="Upload audio file", source="upload", visible=True, interactive=True)
                 # Youtube
                 vc_download_audio = gr.Dropdown(label="Provider", choices=["Youtube"], allow_custom_value=False, visible=False, value="Youtube", info="Select provider (Default: Youtube)")
@@ -669,7 +669,7 @@ with gr.Blocks() as app:
                 tts_text = gr.Textbox(label="TTS text", info="Text to speech input", visible=False)
                 tts_voice = gr.Dropdown(label="Edge-tts speaker", choices=voices, visible=False, allow_custom_value=False, value="en-US-AnaNeural-Female")
                 # Splitter
-                vc_split_model = gr.Dropdown(label="Splitter Model", choices=["hdemucs_mmi", "htdemucs", "htdemucs_ft", "mdx", "mdx_q", "mdx_extra_q"], allow_custom_value=False, visible=True, value="htdemucs", info="Select the splitter model (Default: htdemucs)")
+                vc_split_model = gr.Dropdown(label="Модель Splitter (Разделитель).", choices=["hdemucs_mmi", "htdemucs", "htdemucs_ft", "mdx", "mdx_q", "mdx_extra_q"], allow_custom_value=False, visible=True, value="htdemucs", info="Выберите модель Splitter (Разделитель) (по умолчанию: htdemucs)")
                 vc_split_log = gr.Textbox(label="Output Information", visible=True, interactive=False)
                 vc_split_yt = gr.Button("Split Audio", variant="primary", visible=False)
                 vc_split = gr.Button("Split Audio", variant="primary", visible=True)
@@ -677,12 +677,12 @@ with gr.Blocks() as app:
                 vc_inst_preview = gr.Audio(label="Instrumental Preview", interactive=False, visible=True)
             with gr.Column():
                 vc_transform0 = gr.Number(
-                    label="Transpose", 
-                    info='Type "12" to change from male to female convertion or Type "-12" to change female to male convertion.',
+                    label="Транспонировать", 
+                    info='Введите "12", чтобы изменить конвертацию с мужского на женский голос, или введите "-12", чтобы изменить конвертацию с женского на мужской голос.',
                     value=0
                 )
                 f0method0 = gr.Radio(
-                    label="Pitch extraction algorithm",
+                    label="Алгоритм извлечения тональности (питча)",
                     info=f0method_info,
                     choices=f0method_mode,
                     value="pm",
@@ -691,15 +691,15 @@ with gr.Blocks() as app:
                 index_rate0 = gr.Slider(
                     minimum=0,
                     maximum=1,
-                    label="Retrieval feature ratio",
+                    label="Коэффициент соотношения характеристик извлечения.",
                     value=0.7,
                     interactive=True,
                 )
                 filter_radius0 = gr.Slider(
                     minimum=0,
                     maximum=7,
-                    label="Apply Median Filtering",
-                    info="The value represents the filter radius and can reduce breathiness.",
+                    label="Применить медианный фильтр",
+                    info="Это значение представляет собой радиус фильтра и может уменьшить дыхательные шумы.",
                     value=3,
                     step=1,
                     interactive=True,
@@ -708,7 +708,7 @@ with gr.Blocks() as app:
                     minimum=0,
                     maximum=48000,
                     label="Resample the output audio",
-                    info="Resample the output audio in post-processing to the final sample rate. Set to 0 for no resampling",
+                    info="Передискретизация выходного аудио в постобработке до конечной частоты дискретизации. Установите значение 0, чтобы отключить передискретизацию.",
                     value=0,
                     step=1,
                     interactive=True,
@@ -717,7 +717,7 @@ with gr.Blocks() as app:
                     minimum=0,
                     maximum=1,
                     label="Volume Envelope",
-                    info="Use the volume envelope of the input to replace or mix with the volume envelope of the output. The closer the ratio is to 1, the more the output envelope is used",
+                    info="Используйте огибающую громкости входного сигнала для замены или смешивания с огибающей громкости выходного сигнала. Чем ближе соотношение к 1, тем больше используется огибающая выходного сигнала",
                     value=1,
                     interactive=True,
                 )
@@ -725,7 +725,7 @@ with gr.Blocks() as app:
                     minimum=0,
                     maximum=0.5,
                     label="Voice Protection",
-                    info="Protect voiceless consonants and breath sounds to prevent artifacts such as tearing in electronic music. Set to 0.5 to disable. Decrease the value to increase protection, but it may reduce indexing accuracy",
+                    info="Защитите безголосые согласные и звуки дыхания, чтобы предотвратить артефакты, такие как рваный звук в электронной музыке. Установите значение 0.5, чтобы отключить защиту. Уменьшите значение, чтобы усилить защиту, но это может снизить точность индексации.",
                     value=0.5,
                     step=0.01,
                     interactive=True,
@@ -735,8 +735,8 @@ with gr.Blocks() as app:
                     info="One pitch per line, Replace the default F0 and pitch modulation"
                 )
             with gr.Column():
-                vc_log = gr.Textbox(label="Output Information", interactive=False)
-                vc_output = gr.Audio(label="Output Audio", interactive=False)
+                vc_log = gr.Textbox(label="Информация о выходных данных.", interactive=False)
+                vc_output = gr.Audio(label="Выходное аудио.", interactive=False)
                 vc_convert = gr.Button("Convert", variant="primary")
                 vc_vocal_volume = gr.Slider(
                     minimum=0,
@@ -745,7 +745,7 @@ with gr.Blocks() as app:
                     value=1,
                     interactive=True,
                     step=1,
-                    info="Adjust vocal volume (Default: 1}",
+                    info="Регулировка громкости вокала (по умолчанию: 1).",
                     visible=True
                 )
                 vc_inst_volume = gr.Slider(
@@ -755,7 +755,7 @@ with gr.Blocks() as app:
                     value=1,
                     interactive=True,
                     step=1,
-                    info="Adjust instrument volume (Default: 1}",
+                    info="Регулировка громкости инструментов (по умолчанию: 1).",
                     visible=True
                 )
                 vc_combined_output = gr.Audio(label="Output Combined Audio", visible=True)
@@ -838,7 +838,7 @@ with gr.Blocks() as app:
             ]
         )
         sid.change(fn=get_vc, inputs=[sid, protect0], outputs=[spk_item, protect0, file_index, selected_model])
-    with gr.TabItem("Batch Inference"):
+    with gr.TabItem("Пакетный вывод"):
         with gr.Row():
             with gr.Column():
                 vc_input_bat = gr.Textbox(label="Input audio path (folder)", visible=True)
@@ -918,11 +918,11 @@ with gr.Blocks() as app:
             ],
             [vc_log_bat],
         )
-    with gr.TabItem("Model Downloader"):
+    with gr.TabItem("Скачать Модель"):
         gr.Markdown(
-            "# <center> Model Downloader (Beta)\n"+
-            "#### <center> To download multi link you have to put your link to the textbox and every link separated by space\n"+
-            "#### <center> Support Direct Link, Mega, Google Drive, etc"
+            "# <center> Скачать Модель (Beta)\n"+
+            "#### <center> Чтобы скачать несколько ссылок, вам нужно вставить свои ссылки в текстовое поле, разделяя каждую ссылку пробелом."+
+            "#### <center> Поддерживает прямые ссылки, Mega, Google Drive и другие. (Модель загружайте на Pixeldrain.com)"
         )
         with gr.Column():
             md_text = gr.Textbox(label="URL")
@@ -934,9 +934,9 @@ with gr.Blocks() as app:
                 inputs=[md_text],
                 outputs=[md_download_logs]
             )
-    with gr.TabItem("Settings"):
+    with gr.TabItem("Настройки"):
         gr.Markdown(
-            "# <center> Settings\n"+
-            "#### <center> Work in progress"
+            "# <center> Настройки error\n"+
+            "#### <center> <3 ЗАКАЗАТЬ КАЧЕСТВЕННУЮ ГОЛОСОВУЮ МОДЕЛЬ У НАС В ЛС В ТГ: t.me/simbioz_2002"
         )
     app.queue(concurrency_count=1, max_size=50, api_open=config.api).launch(share=config.colab)
